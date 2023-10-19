@@ -6,44 +6,43 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 
-namespace FileContextCore.Extensions
+// ReSharper disable once CheckNamespace
+namespace System.Reflection;
+
+internal static class EntityFrameworkMemberInfoExtensions
 {
-    internal static class MemberInfoExtensions
+    public static Type GetMemberType(this MemberInfo memberInfo)
+        => (memberInfo as PropertyInfo)?.PropertyType ?? ((FieldInfo)memberInfo)?.FieldType;
+
+    public static bool IsSameAs(this MemberInfo propertyInfo, MemberInfo otherPropertyInfo)
+        => propertyInfo == null
+            ? otherPropertyInfo == null
+            : otherPropertyInfo == null
+                ? false
+                : Equals(propertyInfo, otherPropertyInfo)
+                  || propertyInfo.Name == otherPropertyInfo.Name
+                      && (propertyInfo.DeclaringType == otherPropertyInfo.DeclaringType
+                          || propertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(otherPropertyInfo.DeclaringType)
+                          || otherPropertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(propertyInfo.DeclaringType)
+                          || propertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(otherPropertyInfo.DeclaringType)
+                          || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType));
+
+    public static string GetSimpleMemberName(this MemberInfo member)
     {
-        public static Type GetMemberType(this MemberInfo memberInfo)
-            => (memberInfo as PropertyInfo)?.PropertyType ?? ((FieldInfo)memberInfo)?.FieldType;
+        var name = member.Name;
+        var index = name.LastIndexOf('.');
+        return index >= 0 ? name.Substring(index + 1) : name;
+    }
 
-        public static bool IsSameAs(this MemberInfo propertyInfo, MemberInfo otherPropertyInfo)
-            => propertyInfo == null
-                ? otherPropertyInfo == null
-                : otherPropertyInfo == null
-                    ? false
-                    : Equals(propertyInfo, otherPropertyInfo)
-                      || propertyInfo.Name == otherPropertyInfo.Name
-                          && (propertyInfo.DeclaringType == otherPropertyInfo.DeclaringType
-                              || propertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(otherPropertyInfo.DeclaringType)
-                              || otherPropertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(propertyInfo.DeclaringType)
-                              || propertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(otherPropertyInfo.DeclaringType)
-                              || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType));
+    private class MemberInfoComparer : IEqualityComparer<MemberInfo>
+    {
+        public static readonly MemberInfoComparer Instance = new MemberInfoComparer();
 
-        public static string GetSimpleMemberName(this MemberInfo member)
-        {
-            var name = member.Name;
-            var index = name.LastIndexOf('.');
-            return index >= 0 ? name.Substring(index + 1) : name;
-        }
+        public bool Equals(MemberInfo x, MemberInfo y)
+            => x.IsSameAs(y);
 
-        private class MemberInfoComparer : IEqualityComparer<MemberInfo>
-        {
-            public static readonly MemberInfoComparer Instance = new MemberInfoComparer();
-
-            public bool Equals(MemberInfo x, MemberInfo y)
-                => x.IsSameAs(y);
-
-            public int GetHashCode(MemberInfo obj)
-                => obj.GetHashCode();
-        }
+        public int GetHashCode(MemberInfo obj)
+            => obj.GetHashCode();
     }
 }
