@@ -13,7 +13,7 @@
     <Copyright>Copyright © Morris Janatzek</Copyright>
     <Title>FileContextCore</Title>
     <PackageLicenseUrl></PackageLicenseUrl>
-    <PackageIconUrl>https://morrisj.net/storage/morrisjdev_logo.png</PackageIconUrl>
+    <PackageIcon>morrisjdev_logo.png</PackageIcon>
     <RepositoryUrl>https://github.com/morrisjdev/FileContextCore</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>Entity Framework Core;entity-framework-core;EF;Data;O/RM;FileContext;FileDB;JSON;XML;CSV;ELSX;Excel</PackageTags>
@@ -37,6 +37,10 @@
 
   <ItemGroup>
     <None Include="..\LICENSE">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="..\morrisjdev_logo.png">
       <Pack>True</Pack>
       <PackagePath></PackagePath>
     </None>
