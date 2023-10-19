@@ -3,6 +3,7 @@
 // Modified version by morrisjdev
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +11,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 
 // ReSharper disable once CheckNamespace
-namespace System
+namespace FileContextCore.Extensions
 {
     [DebuggerStepThrough]
     internal static class SharedTypeExtensions
@@ -127,12 +128,12 @@ namespace System
             }
 
             var underlyingEnumType = Enum.GetUnderlyingType(underlyingNonNullableType);
-            return isNullable ? MakeNullable(underlyingEnumType) : underlyingEnumType;
+            return isNullable ? underlyingEnumType.MakeNullable() : underlyingEnumType;
         }
 
         public static Type GetSequenceType(this Type type)
         {
-            var sequenceType = TryGetSequenceType(type);
+            var sequenceType = type.TryGetSequenceType();
             if (sequenceType == null)
             {
                 // TODO: Add exception message
@@ -153,7 +154,7 @@ namespace System
                 return null;
             }
 
-            var types = GetGenericTypeImplementations(type, interfaceOrBaseType);
+            var types = type.GetGenericTypeImplementations(interfaceOrBaseType);
 
             Type singleImplementation = null;
             foreach (var implementation in types)

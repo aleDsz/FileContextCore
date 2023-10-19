@@ -5,10 +5,12 @@
 
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
+
 using JetBrains.Annotations;
 
 // ReSharper disable once CheckNamespace
-namespace System.Reflection
+namespace FileContextCore.Extensions
 {
     [DebuggerStepThrough]
     internal static class PropertyInfoExtensions

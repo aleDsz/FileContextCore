@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace FileContextCore
+namespace FileContextCore.Extensions
 {
     public static class ExpressionExtension
     {

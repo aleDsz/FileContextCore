@@ -5,9 +5,10 @@
 
 using System.Collections.Generic;
 using System.Diagnostics;
+
 using JetBrains.Annotations;
 
-namespace FileContextCore.Utilities
+namespace FileContextCore.Extensions
 {
     [DebuggerStepThrough]
     internal static class DictionaryExtensions

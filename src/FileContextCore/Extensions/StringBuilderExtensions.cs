@@ -3,9 +3,11 @@
 // Modified version by morrisjdev
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace System.Text
+namespace FileContextCore.Extensions
 {
     internal static class StringBuilderExtensions
     {

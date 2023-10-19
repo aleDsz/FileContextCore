@@ -5,9 +5,10 @@
 
 using System;
 using System.Threading.Tasks;
+
 using JetBrains.Annotations;
 
-namespace FileContextCore.Utilities
+namespace FileContextCore.Extensions
 {
     internal static class DisposableExtensions
     {

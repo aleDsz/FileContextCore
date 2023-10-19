@@ -3,10 +3,12 @@
 // Modified version by morrisjdev
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
-namespace System.Reflection
+namespace FileContextCore.Extensions
 {
     internal static class MemberInfoExtensions
     {
@@ -16,15 +18,15 @@ namespace System.Reflection
         public static bool IsSameAs(this MemberInfo propertyInfo, MemberInfo otherPropertyInfo)
             => propertyInfo == null
                 ? otherPropertyInfo == null
-                : (otherPropertyInfo == null
+                : otherPropertyInfo == null
                     ? false
                     : Equals(propertyInfo, otherPropertyInfo)
-                      || (propertyInfo.Name == otherPropertyInfo.Name
+                      || propertyInfo.Name == otherPropertyInfo.Name
                           && (propertyInfo.DeclaringType == otherPropertyInfo.DeclaringType
                               || propertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(otherPropertyInfo.DeclaringType)
                               || otherPropertyInfo.DeclaringType.GetTypeInfo().IsSubclassOf(propertyInfo.DeclaringType)
                               || propertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(otherPropertyInfo.DeclaringType)
-                              || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType))));
+                              || otherPropertyInfo.DeclaringType.GetTypeInfo().ImplementedInterfaces.Contains(propertyInfo.DeclaringType));
 
         public static string GetSimpleMemberName(this MemberInfo member)
         {
