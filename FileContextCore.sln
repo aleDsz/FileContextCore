@@ -1,4 +1,4 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASPNETDemo", "examples\ASPN
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CascadeExample", "examples\CascadeExample\CascadeExample.csproj", "{3D51BF95-B38E-4221-AAAE-5D093FD163DA}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F6F38C83-D6AF-4269-BC87-2711A744BF91}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F6F38C83-D6AF-4269-BC87-2711A744BF91}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{595CA792-19F9-4086-BC0B-E254A042A30D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{595CA792-19F9-4086-BC0B-E254A042A30D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7E50237-B05B-47A5-8911-823D0FCD3D9D}"
 	ProjectSection(SolutionItems) = preProject
