@@ -4,16 +4,15 @@ using FileContextCore.Infrastructure.Internal;
 
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace FileContextCore.Serializer
+namespace FileContextCore.Serializer;
+
+public interface ISerializer
 {
-    public interface ISerializer
-    {
-        Dictionary<TKey, object[]> Deserialize<TKey>(string list, Dictionary<TKey, object[]> newList);
+    Dictionary<TKey, object[]> Deserialize<TKey>(string list, Dictionary<TKey, object[]> newList);
 
-        string Serialize<TKey>(Dictionary<TKey, object[]> list);
+    string Serialize<TKey>(Dictionary<TKey, object[]> list);
 
-        void Initialize(IFileContextScopedOptions options, IEntityType entityType, object keyValueFactory);
+    void Initialize(IFileContextScopedOptions options, IEntityType entityType, object keyValueFactory);
 
-        string FileType { get; }
-    }
+    string FileType { get; }
 }

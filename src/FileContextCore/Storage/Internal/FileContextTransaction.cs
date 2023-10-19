@@ -9,39 +9,30 @@ using System.Threading.Tasks;
 
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public class FileContextTransaction : IDbContextTransaction
 {
+    public virtual Guid TransactionId { get; } = Guid.NewGuid();
 
-    public class FileContextTransaction : IDbContextTransaction
+    public virtual void Commit()
     {
-
-        public virtual Guid TransactionId { get; } = Guid.NewGuid();
-
-
-        public virtual void Commit()
-        {
-        }
-
-
-        public virtual void Rollback()
-        {
-        }
-
-
-        public virtual Task CommitAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
-
-
-        public virtual Task RollbackAsync(CancellationToken cancellationToken = default)
-            => Task.CompletedTask;
-
-
-        public virtual void Dispose()
-        {
-        }
-
-
-        public virtual ValueTask DisposeAsync()
-            => default;
     }
+
+    public virtual void Rollback()
+    {
+    }
+
+    public virtual Task CommitAsync(CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
+
+    public virtual Task RollbackAsync(CancellationToken cancellationToken = default)
+        => Task.CompletedTask;
+
+    public virtual void Dispose()
+    {
+    }
+
+    public virtual ValueTask DisposeAsync()
+        => default;
 }

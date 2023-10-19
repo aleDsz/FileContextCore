@@ -5,19 +5,17 @@
 
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace FileContextCore.Query.Internal
+namespace FileContextCore.Query.Internal;
+
+public class FileContextShapedQueryCompilingExpressionVisitorFactory : IShapedQueryCompilingExpressionVisitorFactory
 {
-    public class FileContextShapedQueryCompilingExpressionVisitorFactory : IShapedQueryCompilingExpressionVisitorFactory
+    private readonly ShapedQueryCompilingExpressionVisitorDependencies _dependencies;
+
+    public FileContextShapedQueryCompilingExpressionVisitorFactory(ShapedQueryCompilingExpressionVisitorDependencies dependencies)
     {
-        private readonly ShapedQueryCompilingExpressionVisitorDependencies _dependencies;
-
-        public FileContextShapedQueryCompilingExpressionVisitorFactory(ShapedQueryCompilingExpressionVisitorDependencies dependencies)
-        {
-            _dependencies = dependencies;
-        }
-
-        public virtual ShapedQueryCompilingExpressionVisitor Create(QueryCompilationContext queryCompilationContext)
-            => new FileContextShapedQueryCompilingExpressionVisitor(_dependencies, queryCompilationContext);
+        _dependencies = dependencies;
     }
 
+    public virtual ShapedQueryCompilingExpressionVisitor Create(QueryCompilationContext queryCompilationContext)
+        => new FileContextShapedQueryCompilingExpressionVisitor(_dependencies, queryCompilationContext);
 }

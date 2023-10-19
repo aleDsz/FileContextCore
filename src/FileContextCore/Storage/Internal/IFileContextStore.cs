@@ -14,27 +14,20 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Update;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public interface IFileContextStore
 {
+    bool EnsureCreated(
+        [NotNull] IUpdateAdapterFactory updateAdapterFactory,
+        [NotNull] IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger);
 
-    public interface IFileContextStore
-    {
+    bool Clear();
 
-        bool EnsureCreated(
-            [NotNull] IUpdateAdapterFactory updateAdapterFactory,
-            [NotNull] IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger);
+    IReadOnlyList<FileContextTableSnapshot> GetTables([NotNull] IEntityType entityType);
 
+    FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>([NotNull] IProperty property);
 
-        bool Clear();
-
-
-        IReadOnlyList<FileContextTableSnapshot> GetTables([NotNull] IEntityType entityType);
-
-
-        FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>([NotNull] IProperty property);
-
-
-        int ExecuteTransaction(
-            [NotNull] IList<IUpdateEntry> entries, [NotNull] IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger);
-    }
+    int ExecuteTransaction(
+        [NotNull] IList<IUpdateEntry> entries, [NotNull] IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger);
 }

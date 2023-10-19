@@ -11,35 +11,31 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public class FileContextTypeMapping : CoreTypeMapping
 {
-
-    public class FileContextTypeMapping : CoreTypeMapping
+    public FileContextTypeMapping(
+        [NotNull] Type clrType,
+        [CanBeNull] ValueComparer comparer = null,
+        [CanBeNull] ValueComparer keyComparer = null,
+        [CanBeNull] ValueComparer structuralComparer = null)
+        : base(
+            new CoreTypeMappingParameters(
+                clrType,
+                converter: null,
+                comparer,
+                keyComparer,
+                structuralComparer,
+                valueGeneratorFactory: null))
     {
-
-        public FileContextTypeMapping(
-            [NotNull] Type clrType,
-            [CanBeNull] ValueComparer comparer = null,
-            [CanBeNull] ValueComparer keyComparer = null,
-            [CanBeNull] ValueComparer structuralComparer = null)
-            : base(
-                new CoreTypeMappingParameters(
-                    clrType,
-                    converter: null,
-                    comparer,
-                    keyComparer,
-                    structuralComparer,
-                    valueGeneratorFactory: null))
-        {
-        }
-
-        private FileContextTypeMapping(CoreTypeMappingParameters parameters)
-            : base(parameters)
-        {
-        }
-
-
-        public override CoreTypeMapping Clone(ValueConverter converter)
-            => new FileContextTypeMapping(Parameters.WithComposedConverter(converter));
     }
+
+    private FileContextTypeMapping(CoreTypeMappingParameters parameters)
+        : base(parameters)
+    {
+    }
+
+    public override CoreTypeMapping Clone(ValueConverter converter)
+        => new FileContextTypeMapping(Parameters.WithComposedConverter(converter));
 }

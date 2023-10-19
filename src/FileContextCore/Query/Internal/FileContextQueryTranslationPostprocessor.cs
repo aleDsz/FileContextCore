@@ -7,20 +7,19 @@ using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace FileContextCore.Query.Internal
+namespace FileContextCore.Query.Internal;
+
+public class FileContextQueryTranslationPostprocessor : QueryTranslationPostprocessor
 {
-    public class FileContextQueryTranslationPostprocessor : QueryTranslationPostprocessor
+    public FileContextQueryTranslationPostprocessor(QueryTranslationPostprocessorDependencies dependencies)
+        : base(dependencies)
     {
-        public FileContextQueryTranslationPostprocessor(QueryTranslationPostprocessorDependencies dependencies)
-            : base(dependencies)
-        {
-        }
+    }
 
-        public override Expression Process(Expression query)
-        {
-            query = base.Process(query);
+    public override Expression Process(Expression query)
+    {
+        query = base.Process(query);
 
-            return query;
-        }
+        return query;
     }
 }

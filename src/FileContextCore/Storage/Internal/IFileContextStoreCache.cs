@@ -7,12 +7,9 @@ using FileContextCore.Infrastructure.Internal;
 
 using JetBrains.Annotations;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public interface IFileContextStoreCache
 {
-
-    public interface IFileContextStoreCache
-    {
-
-        IFileContextStore GetStore([NotNull] IFileContextScopedOptions options);
-    }
+    IFileContextStore GetStore([NotNull] IFileContextScopedOptions options);
 }

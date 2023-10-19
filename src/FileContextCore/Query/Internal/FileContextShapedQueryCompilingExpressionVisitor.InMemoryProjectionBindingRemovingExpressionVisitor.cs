@@ -12,108 +12,107 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FileContextCore.Query.Internal
+namespace FileContextCore.Query.Internal;
+
+public partial class FileContextShapedQueryCompilingExpressionVisitor
 {
-    public partial class FileContextShapedQueryCompilingExpressionVisitor
+    private class FileContextProjectionBindingRemovingExpressionVisitor : ExpressionVisitor
     {
-        private class FileContextProjectionBindingRemovingExpressionVisitor : ExpressionVisitor
+        private readonly IDictionary<ParameterExpression, (IDictionary<IProperty, int> IndexMap, ParameterExpression valueBuffer)>
+            _materializationContextBindings
+            = new Dictionary<ParameterExpression, (IDictionary<IProperty, int> IndexMap, ParameterExpression valueBuffer)>();
+
+        protected override Expression VisitBinary(BinaryExpression binaryExpression)
         {
-            private readonly IDictionary<ParameterExpression, (IDictionary<IProperty, int> IndexMap, ParameterExpression valueBuffer)>
-                _materializationContextBindings
-                = new Dictionary<ParameterExpression, (IDictionary<IProperty, int> IndexMap, ParameterExpression valueBuffer)>();
-
-            protected override Expression VisitBinary(BinaryExpression binaryExpression)
+            if (binaryExpression.NodeType == ExpressionType.Assign
+                && binaryExpression.Left is ParameterExpression parameterExpression
+                && parameterExpression.Type == typeof(MaterializationContext))
             {
-                if (binaryExpression.NodeType == ExpressionType.Assign
-                    && binaryExpression.Left is ParameterExpression parameterExpression
-                    && parameterExpression.Type == typeof(MaterializationContext))
-                {
-                    var newExpression = (NewExpression)binaryExpression.Right;
+                var newExpression = (NewExpression)binaryExpression.Right;
 
-                    var projectionBindingExpression = (ProjectionBindingExpression)newExpression.Arguments[0];
-                    var queryExpression = (FileContextQueryExpression)projectionBindingExpression.QueryExpression;
+                var projectionBindingExpression = (ProjectionBindingExpression)newExpression.Arguments[0];
+                var queryExpression = (FileContextQueryExpression)projectionBindingExpression.QueryExpression;
 
-                    _materializationContextBindings[parameterExpression]
-                        = ((IDictionary<IProperty, int>)GetProjectionIndex(queryExpression, projectionBindingExpression),
-                            ((FileContextQueryExpression)projectionBindingExpression.QueryExpression).CurrentParameter);
+                _materializationContextBindings[parameterExpression]
+                    = ((IDictionary<IProperty, int>)GetProjectionIndex(queryExpression, projectionBindingExpression),
+                        ((FileContextQueryExpression)projectionBindingExpression.QueryExpression).CurrentParameter);
 
-                    var updatedExpression = Expression.New(
-                        newExpression.Constructor,
-                        Expression.Constant(ValueBuffer.Empty),
-                        newExpression.Arguments[1]);
+                var updatedExpression = Expression.New(
+                    newExpression.Constructor,
+                    Expression.Constant(ValueBuffer.Empty),
+                    newExpression.Arguments[1]);
 
-                    return Expression.MakeBinary(ExpressionType.Assign, binaryExpression.Left, updatedExpression);
-                }
-
-                if (binaryExpression.NodeType == ExpressionType.Assign
-                    && binaryExpression.Left is MemberExpression memberExpression
-                    && memberExpression.Member is FieldInfo fieldInfo
-                    && fieldInfo.IsInitOnly)
-                {
-                    return memberExpression.Assign(Visit(binaryExpression.Right));
-                }
-
-                return base.VisitBinary(binaryExpression);
+                return Expression.MakeBinary(ExpressionType.Assign, binaryExpression.Left, updatedExpression);
             }
 
-            protected override Expression VisitMethodCall(MethodCallExpression methodCallExpression)
+            if (binaryExpression.NodeType == ExpressionType.Assign
+                && binaryExpression.Left is MemberExpression memberExpression
+                && memberExpression.Member is FieldInfo fieldInfo
+                && fieldInfo.IsInitOnly)
             {
-                if (methodCallExpression.Method.IsGenericMethod
-                    && methodCallExpression.Method.GetGenericMethodDefinition() == EntityMaterializerSource.TryReadValueMethod)
-                {
-                    var property = (IProperty)((ConstantExpression)methodCallExpression.Arguments[2]).Value;
-                    var (indexMap, valueBuffer) =
-                        _materializationContextBindings[
-                            (ParameterExpression)((MethodCallExpression)methodCallExpression.Arguments[0]).Object];
-
-                    return Expression.Call(
-                        methodCallExpression.Method,
-                        valueBuffer,
-                        Expression.Constant(indexMap[property]),
-                        methodCallExpression.Arguments[2]);
-                }
-
-                return base.VisitMethodCall(methodCallExpression);
+                return memberExpression.Assign(Visit(binaryExpression.Right));
             }
 
-            protected override Expression VisitExtension(Expression extensionExpression)
+            return base.VisitBinary(binaryExpression);
+        }
+
+        protected override Expression VisitMethodCall(MethodCallExpression methodCallExpression)
+        {
+            if (methodCallExpression.Method.IsGenericMethod
+                && methodCallExpression.Method.GetGenericMethodDefinition() == EntityMaterializerSource.TryReadValueMethod)
             {
-                if (extensionExpression is ProjectionBindingExpression projectionBindingExpression)
-                {
-                    var queryExpression = (FileContextQueryExpression)projectionBindingExpression.QueryExpression;
-                    var projectionIndex = (int)GetProjectionIndex(queryExpression, projectionBindingExpression);
-                    var valueBuffer = queryExpression.CurrentParameter;
+                var property = (IProperty)((ConstantExpression)methodCallExpression.Arguments[2]).Value;
+                var (indexMap, valueBuffer) =
+                    _materializationContextBindings[
+                        (ParameterExpression)((MethodCallExpression)methodCallExpression.Arguments[0]).Object];
 
-                    return Expression.Call(
-                        EntityMaterializerSource.TryReadValueMethod.MakeGenericMethod(projectionBindingExpression.Type),
-                        valueBuffer,
-                        Expression.Constant(projectionIndex),
-                        Expression.Constant(InferPropertyFromInner(queryExpression.Projection[projectionIndex]), typeof(IPropertyBase)));
-                }
-
-                return base.VisitExtension(extensionExpression);
+                return Expression.Call(
+                    methodCallExpression.Method,
+                    valueBuffer,
+                    Expression.Constant(indexMap[property]),
+                    methodCallExpression.Arguments[2]);
             }
 
-            private IPropertyBase InferPropertyFromInner(Expression expression)
-            {
-                if (expression is MethodCallExpression methodCallExpression
-                    && methodCallExpression.Method.IsGenericMethod
-                    && methodCallExpression.Method.GetGenericMethodDefinition() == EntityMaterializerSource.TryReadValueMethod)
-                {
-                    return (IPropertyBase)((ConstantExpression)methodCallExpression.Arguments[2]).Value;
-                }
+            return base.VisitMethodCall(methodCallExpression);
+        }
 
-                return null;
+        protected override Expression VisitExtension(Expression extensionExpression)
+        {
+            if (extensionExpression is ProjectionBindingExpression projectionBindingExpression)
+            {
+                var queryExpression = (FileContextQueryExpression)projectionBindingExpression.QueryExpression;
+                var projectionIndex = (int)GetProjectionIndex(queryExpression, projectionBindingExpression);
+                var valueBuffer = queryExpression.CurrentParameter;
+
+                return Expression.Call(
+                    EntityMaterializerSource.TryReadValueMethod.MakeGenericMethod(projectionBindingExpression.Type),
+                    valueBuffer,
+                    Expression.Constant(projectionIndex),
+                    Expression.Constant(InferPropertyFromInner(queryExpression.Projection[projectionIndex]), typeof(IPropertyBase)));
             }
 
-            private object GetProjectionIndex(FileContextQueryExpression queryExpression, ProjectionBindingExpression projectionBindingExpression)
+            return base.VisitExtension(extensionExpression);
+        }
+
+        private IPropertyBase InferPropertyFromInner(Expression expression)
+        {
+            if (expression is MethodCallExpression methodCallExpression
+                && methodCallExpression.Method.IsGenericMethod
+                && methodCallExpression.Method.GetGenericMethodDefinition() == EntityMaterializerSource.TryReadValueMethod)
             {
-                return projectionBindingExpression.ProjectionMember != null
-                    ? ((ConstantExpression)queryExpression.GetMappedProjection(projectionBindingExpression.ProjectionMember)).Value
-                    : (projectionBindingExpression.Index != null
-                        ? (object)projectionBindingExpression.Index
-                        : projectionBindingExpression.IndexMap);
+                return (IPropertyBase)((ConstantExpression)methodCallExpression.Arguments[2]).Value;
             }
+
+            return null;
+        }
+
+        private object GetProjectionIndex(FileContextQueryExpression queryExpression, ProjectionBindingExpression projectionBindingExpression)
+        {
+            return projectionBindingExpression.ProjectionMember != null
+                ? ((ConstantExpression)queryExpression.GetMappedProjection(projectionBindingExpression.ProjectionMember)).Value
+                : (projectionBindingExpression.Index != null
+                    ? (object)projectionBindingExpression.Index
+                    : projectionBindingExpression.IndexMap);
         }
     }
 }

@@ -2,20 +2,19 @@
 
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace FileContextCore.FileManager
+namespace FileContextCore.FileManager;
+
+public interface IFileManager
 {
-    public interface IFileManager
-    {
-        string GetFileName();
+    string GetFileName();
 
-        string LoadContent();
+    string LoadContent();
 
-        void SaveContent(string content);
+    void SaveContent(string content);
 
-        bool Clear();
+    bool Clear();
 
-        bool FileExists();
+    bool FileExists();
 
-        void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType);
-    }
+    void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType);
 }

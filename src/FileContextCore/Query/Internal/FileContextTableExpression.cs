@@ -11,29 +11,28 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FileContextCore.Query.Internal
+namespace FileContextCore.Query.Internal;
+
+public class FileContextTableExpression : Expression, IPrintableExpression
 {
-    public class FileContextTableExpression : Expression, IPrintableExpression
+    public FileContextTableExpression(IEntityType entityType)
     {
-        public FileContextTableExpression(IEntityType entityType)
-        {
-            EntityType = entityType;
-        }
+        EntityType = entityType;
+    }
 
-        public override Type Type => typeof(IEnumerable<ValueBuffer>);
+    public override Type Type => typeof(IEnumerable<ValueBuffer>);
 
-        public virtual IEntityType EntityType { get; }
+    public virtual IEntityType EntityType { get; }
 
-        public sealed override ExpressionType NodeType => ExpressionType.Extension;
+    public sealed override ExpressionType NodeType => ExpressionType.Extension;
 
-        protected override Expression VisitChildren(ExpressionVisitor visitor)
-        {
-            return this;
-        }
+    protected override Expression VisitChildren(ExpressionVisitor visitor)
+    {
+        return this;
+    }
 
-        public virtual void Print(ExpressionPrinter expressionPrinter)
-        {
-            expressionPrinter.Append(nameof(FileContextTableExpression) + ": Entity: " + EntityType.DisplayName());
-        }
+    public virtual void Print(ExpressionPrinter expressionPrinter)
+    {
+        expressionPrinter.Append(nameof(FileContextTableExpression) + ": Entity: " + EntityType.DisplayName());
     }
 }

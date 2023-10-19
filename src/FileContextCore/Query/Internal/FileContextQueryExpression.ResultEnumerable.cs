@@ -9,58 +9,57 @@ using System.Collections.Generic;
 
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FileContextCore.Query.Internal
-{
-    public partial class FileContextQueryExpression
-    {
-        private sealed class ResultEnumerable : IEnumerable<ValueBuffer>
-        {
-            private readonly Func<ValueBuffer> _getElement;
+namespace FileContextCore.Query.Internal;
 
-            public ResultEnumerable(Func<ValueBuffer> getElement)
+public partial class FileContextQueryExpression
+{
+    private sealed class ResultEnumerable : IEnumerable<ValueBuffer>
+    {
+        private readonly Func<ValueBuffer> _getElement;
+
+        public ResultEnumerable(Func<ValueBuffer> getElement)
+        {
+            _getElement = getElement;
+        }
+
+        public IEnumerator<ValueBuffer> GetEnumerator() => new ResultEnumerator(_getElement());
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        private sealed class ResultEnumerator : IEnumerator<ValueBuffer>
+        {
+            private readonly ValueBuffer _value;
+            private bool _moved;
+
+            public ResultEnumerator(ValueBuffer value)
             {
-                _getElement = getElement;
+                _value = value;
+                _moved = _value.IsEmpty;
             }
 
-            public IEnumerator<ValueBuffer> GetEnumerator() => new ResultEnumerator(_getElement());
-
-            IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
-
-            private sealed class ResultEnumerator : IEnumerator<ValueBuffer>
+            public bool MoveNext()
             {
-                private readonly ValueBuffer _value;
-                private bool _moved;
-
-                public ResultEnumerator(ValueBuffer value)
+                if (!_moved)
                 {
-                    _value = value;
-                    _moved = _value.IsEmpty;
+                    _moved = true;
+
+                    return _moved;
                 }
 
-                public bool MoveNext()
-                {
-                    if (!_moved)
-                    {
-                        _moved = true;
+                return false;
+            }
 
-                        return _moved;
-                    }
+            public void Reset()
+            {
+                _moved = false;
+            }
 
-                    return false;
-                }
+            object IEnumerator.Current => Current;
 
-                public void Reset()
-                {
-                    _moved = false;
-                }
+            public ValueBuffer Current => !_moved ? ValueBuffer.Empty : _value;
 
-                object IEnumerator.Current => Current;
-
-                public ValueBuffer Current => !_moved ? ValueBuffer.Empty : _value;
-
-                void IDisposable.Dispose()
-                {
-                }
+            void IDisposable.Dispose()
+            {
             }
         }
     }

@@ -7,12 +7,9 @@ using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public interface IFileContextTableFactory
 {
-
-    public interface IFileContextTableFactory
-    {
-
-        IFileContextTable Create([NotNull] IEntityType entityType);
-    }
+    IFileContextTable Create([NotNull] IEntityType entityType);
 }

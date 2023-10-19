@@ -5,15 +5,11 @@
 
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace FileContextCore.Diagnostics.Internal
+namespace FileContextCore.Diagnostics.Internal;
+
+public class FileContextLoggingDefinitions : LoggingDefinitions
 {
+    public EventDefinitionBase LogSavedChanges;
 
-    public class FileContextLoggingDefinitions : LoggingDefinitions
-    {
-
-        public EventDefinitionBase LogSavedChanges;
-
-
-        public EventDefinitionBase LogTransactionsNotSupported;
-    }
+    public EventDefinitionBase LogTransactionsNotSupported;
 }

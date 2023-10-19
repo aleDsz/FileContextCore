@@ -12,26 +12,20 @@ using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Update;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+
+public interface IFileContextTable
 {
+    IReadOnlyList<object[]> SnapshotRows();
 
-    public interface IFileContextTable
-    {
+    void Create([NotNull] IUpdateEntry entry);
 
-        IReadOnlyList<object[]> SnapshotRows();
+    void Delete([NotNull] IUpdateEntry entry);
 
+    void Update([NotNull] IUpdateEntry entry);
 
-        void Create([NotNull] IUpdateEntry entry);
+    FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>([NotNull] IProperty property);
 
-
-        void Delete([NotNull] IUpdateEntry entry);
-
-
-        void Update([NotNull] IUpdateEntry entry);
-
-
-        FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>([NotNull] IProperty property);
-
-        void Save();
-    }
+    void Save();
 }

@@ -13,44 +13,40 @@ using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public class FileContextStoreCache : IFileContextStoreCache
 {
+    [NotNull] private readonly ILoggingOptions _loggingOptions;
+    private readonly IServiceProvider _serviceProvider;
+    private readonly bool _useNameMatching;
+    private readonly ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore> _namedStores;
 
-    public class FileContextStoreCache : IFileContextStoreCache
+    public FileContextStoreCache(
+        [NotNull] ILoggingOptions loggingOptions,
+        [CanBeNull] IFileContextSingletonOptions options,
+        IServiceProvider serviceProvider)
     {
-        [NotNull] private readonly ILoggingOptions _loggingOptions;
-        private readonly IServiceProvider _serviceProvider;
-        private readonly bool _useNameMatching;
-        private readonly ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore> _namedStores;
-
-
-        public FileContextStoreCache(
-            [NotNull] ILoggingOptions loggingOptions,
-            [CanBeNull] IFileContextSingletonOptions options,
-            IServiceProvider serviceProvider)
+        _loggingOptions = loggingOptions;
+        _serviceProvider = serviceProvider;
+        if (options?.DatabaseRoot != null)
         {
-            _loggingOptions = loggingOptions;
-            _serviceProvider = serviceProvider;
-            if (options?.DatabaseRoot != null)
-            {
-                _useNameMatching = true;
+            _useNameMatching = true;
 
-                LazyInitializer.EnsureInitialized(
-                    ref options.DatabaseRoot.Instance,
-                    () => new ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>());
+            LazyInitializer.EnsureInitialized(
+                ref options.DatabaseRoot.Instance,
+                () => new ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>());
 
-                _namedStores = (ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>)options.DatabaseRoot.Instance;
-            }
-            else
-            {
-                _namedStores = new ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>();
-            }
+            _namedStores = (ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>)options.DatabaseRoot.Instance;
         }
-
-
-        public virtual IFileContextStore GetStore(IFileContextScopedOptions options)
+        else
         {
-            return _namedStores.GetOrAdd(options, _ => new FileContextStore(new FileContextTableFactory(_loggingOptions, options, _serviceProvider), _useNameMatching));
+            _namedStores = new ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore>();
         }
+    }
+
+    public virtual IFileContextStore GetStore(IFileContextScopedOptions options)
+    {
+        return _namedStores.GetOrAdd(options, _ => new FileContextStore(new FileContextTableFactory(_loggingOptions, options, _serviceProvider), _useNameMatching));
     }
 }

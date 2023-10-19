@@ -9,24 +9,19 @@ using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore.Metadata;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public class FileContextTableSnapshot
 {
-
-    public class FileContextTableSnapshot
+    public FileContextTableSnapshot(
+        [NotNull] IEntityType entityType,
+        [NotNull] IReadOnlyList<object[]> rows)
     {
-
-        public FileContextTableSnapshot(
-            [NotNull] IEntityType entityType,
-            [NotNull] IReadOnlyList<object[]> rows)
-        {
-            EntityType = entityType;
-            Rows = rows;
-        }
-
-
-        public virtual IEntityType EntityType { get; }
-
-
-        public virtual IReadOnlyList<object[]> Rows { get; }
+        EntityType = entityType;
+        Rows = rows;
     }
+
+    public virtual IEntityType EntityType { get; }
+
+    public virtual IReadOnlyList<object[]> Rows { get; }
 }

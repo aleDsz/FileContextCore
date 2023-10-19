@@ -3,12 +3,9 @@
 // Modified version by morrisjdev
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
-namespace FileContextCore.ValueGeneration.Internal
+namespace FileContextCore.ValueGeneration.Internal;
+
+public interface IFileContextIntegerValueGenerator
 {
-
-    public interface IFileContextIntegerValueGenerator
-    {
-
-        void Bump(object[] row);
-    }
+    void Bump(object[] row);
 }

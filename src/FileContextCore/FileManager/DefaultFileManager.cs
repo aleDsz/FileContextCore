@@ -4,88 +4,87 @@ using System.IO;
 using FileContextCore.Infrastructure.Internal;
 using Microsoft.EntityFrameworkCore;
 
-namespace FileContextCore.FileManager
+namespace FileContextCore.FileManager;
+
+public class DefaultFileManager : IFileManager
 {
-    public class DefaultFileManager : IFileManager
+    private readonly object _thisLock = new object();
+
+    IEntityType _type;
+    private string _filetype;
+    private string _databasename;
+    private string _location;
+
+    public DefaultFileManager() { }
+
+    public void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType)
     {
-        private readonly object _thisLock = new object();
+        _type = entityType;
+        _filetype = fileType;
+        _databasename = options.DatabaseName ?? "";
+        _location = options.Location;
+    }
 
-        IEntityType _type;
-        private string _filetype;
-        private string _databasename;
-        private string _location;
+    public string GetFileName()
+    {
+        string name = _type.GetTableName().GetValidFileName();
 
-        public DefaultFileManager() { }
+        string path = string.IsNullOrEmpty(_location)
+            ? Path.Combine(AppContext.BaseDirectory, "appdata", _databasename)
+            : _location;
 
-        public void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType)
+        Directory.CreateDirectory(path);
+
+        return Path.Combine(path, name + "." + _filetype);
+    }
+
+    public string LoadContent()
+    {
+        lock (_thisLock)
         {
-            _type = entityType;
-            _filetype = fileType;
-            _databasename = options.DatabaseName ?? "";
-            _location = options.Location;
-        }
+            string path = GetFileName();
 
-        public string GetFileName()
-        {
-            string name = _type.GetTableName().GetValidFileName();
-
-            string path = string.IsNullOrEmpty(_location)
-                ? Path.Combine(AppContext.BaseDirectory, "appdata", _databasename)
-                : _location;
-
-            Directory.CreateDirectory(path);
-
-            return Path.Combine(path, name + "." + _filetype);
-        }
-
-        public string LoadContent()
-        {
-            lock (_thisLock)
+            if (File.Exists(path))
             {
-                string path = GetFileName();
-
-                if (File.Exists(path))
-                {
-                    return File.ReadAllText(path);
-                }
-
-                return "";
+                return File.ReadAllText(path);
             }
+
+            return "";
         }
+    }
 
-        public void SaveContent(string content)
+    public void SaveContent(string content)
+    {
+        lock (_thisLock)
         {
-            lock (_thisLock)
-            {
-                string path = GetFileName();
-                File.WriteAllText(path, content);
-            }
+            string path = GetFileName();
+            File.WriteAllText(path, content);
         }
+    }
 
-        public bool Clear()
+    public bool Clear()
+    {
+        lock (_thisLock)
         {
-            lock (_thisLock)
+            FileInfo fi = new FileInfo(GetFileName());
+
+            if (fi.Exists)
             {
-                FileInfo fi = new FileInfo(GetFileName());
-
-                if (fi.Exists)
-                {
-                    fi.Delete();
-                    return true;
-                }
-
-                return false;
+                fi.Delete();
+                return true;
             }
+
+            return false;
         }
+    }
 
-        public bool FileExists()
+    public bool FileExists()
+    {
+        lock (_thisLock)
         {
-            lock (_thisLock)
-            {
-                FileInfo fi = new FileInfo(GetFileName());
+            FileInfo fi = new FileInfo(GetFileName());
 
-                return fi.Exists;
-            }
+            return fi.Exists;
         }
     }
 }

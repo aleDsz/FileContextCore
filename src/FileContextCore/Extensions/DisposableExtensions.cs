@@ -8,23 +8,22 @@ using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
-namespace FileContextCore.Extensions
-{
-    internal static class DisposableExtensions
-    {
-        public static ValueTask DisposeAsyncIfAvailable([CanBeNull] this IDisposable disposable)
-        {
-            if (disposable != null)
-            {
-                if (disposable is IAsyncDisposable asyncDisposable)
-                {
-                    return asyncDisposable.DisposeAsync();
-                }
+namespace FileContextCore.Extensions;
 
-                disposable.Dispose();
+internal static class DisposableExtensions
+{
+    public static ValueTask DisposeAsyncIfAvailable([CanBeNull] this IDisposable disposable)
+    {
+        if (disposable != null)
+        {
+            if (disposable is IAsyncDisposable asyncDisposable)
+            {
+                return asyncDisposable.DisposeAsync();
             }
 
-            return default;
+            disposable.Dispose();
         }
+
+        return default;
     }
 }

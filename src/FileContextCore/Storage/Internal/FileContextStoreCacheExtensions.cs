@@ -11,13 +11,10 @@ using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
-namespace FileContextCore.Storage.Internal
+namespace FileContextCore.Storage.Internal;
+
+public static class FileContextStoreCacheExtensions
 {
-
-    public static class FileContextStoreCacheExtensions
-    {
-
-        public static IFileContextStore GetStore([NotNull] this IFileContextStoreCache storeCache, [NotNull] IDbContextOptions options)
-            => storeCache.GetStore(options.Extensions.OfType<FileContextOptionsExtension>().First().Options);
-    }
+    public static IFileContextStore GetStore([NotNull] this IFileContextStoreCache storeCache, [NotNull] IDbContextOptions options)
+        => storeCache.GetStore(options.Extensions.OfType<FileContextOptionsExtension>().First().Options);
 }

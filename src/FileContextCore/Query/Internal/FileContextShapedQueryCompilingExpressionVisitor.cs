@@ -15,78 +15,77 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.EntityFrameworkCore.Storage;
 
-namespace FileContextCore.Query.Internal
+namespace FileContextCore.Query.Internal;
+
+public partial class FileContextShapedQueryCompilingExpressionVisitor : ShapedQueryCompilingExpressionVisitor
 {
-    public partial class FileContextShapedQueryCompilingExpressionVisitor : ShapedQueryCompilingExpressionVisitor
+    private readonly Type _contextType;
+    private readonly IDiagnosticsLogger<DbLoggerCategory.Query> _logger;
+
+    public FileContextShapedQueryCompilingExpressionVisitor(
+        ShapedQueryCompilingExpressionVisitorDependencies dependencies,
+        QueryCompilationContext queryCompilationContext)
+        : base(dependencies, queryCompilationContext)
     {
-        private readonly Type _contextType;
-        private readonly IDiagnosticsLogger<DbLoggerCategory.Query> _logger;
+        _contextType = queryCompilationContext.ContextType;
+        _logger = queryCompilationContext.Logger;
+    }
 
-        public FileContextShapedQueryCompilingExpressionVisitor(
-            ShapedQueryCompilingExpressionVisitorDependencies dependencies,
-            QueryCompilationContext queryCompilationContext)
-            : base(dependencies, queryCompilationContext)
+    protected override Expression VisitExtension(Expression extensionExpression)
+    {
+        switch (extensionExpression)
         {
-            _contextType = queryCompilationContext.ContextType;
-            _logger = queryCompilationContext.Logger;
+            case FileContextQueryExpression inMemoryQueryExpression:
+                inMemoryQueryExpression.ApplyProjection();
+                return Visit(inMemoryQueryExpression.ServerQueryExpression);
+
+            case FileContextTableExpression inMemoryTableExpression:
+                return Expression.Call(
+                    _tableMethodInfo,
+                    QueryCompilationContext.QueryContextParameter,
+                    Expression.Constant(inMemoryTableExpression.EntityType));
         }
 
-        protected override Expression VisitExtension(Expression extensionExpression)
-        {
-            switch (extensionExpression)
-            {
-                case FileContextQueryExpression inMemoryQueryExpression:
-                    inMemoryQueryExpression.ApplyProjection();
-                    return Visit(inMemoryQueryExpression.ServerQueryExpression);
+        return base.VisitExtension(extensionExpression);
+    }
 
-                case FileContextTableExpression inMemoryTableExpression:
-                    return Expression.Call(
-                        _tableMethodInfo,
-                        QueryCompilationContext.QueryContextParameter,
-                        Expression.Constant(inMemoryTableExpression.EntityType));
-            }
+    protected override Expression VisitShapedQueryExpression(ShapedQueryExpression shapedQueryExpression)
+    {
+        var inMemoryQueryExpression = (FileContextQueryExpression)shapedQueryExpression.QueryExpression;
 
-            return base.VisitExtension(extensionExpression);
-        }
+        var shaper = new ShaperExpressionProcessingExpressionVisitor(
+            inMemoryQueryExpression, inMemoryQueryExpression.CurrentParameter)
+            .Inject(shapedQueryExpression.ShaperExpression);
 
-        protected override Expression VisitShapedQueryExpression(ShapedQueryExpression shapedQueryExpression)
-        {
-            var inMemoryQueryExpression = (FileContextQueryExpression)shapedQueryExpression.QueryExpression;
+        shaper = InjectEntityMaterializers(shaper);
 
-            var shaper = new ShaperExpressionProcessingExpressionVisitor(
-                inMemoryQueryExpression, inMemoryQueryExpression.CurrentParameter)
-                .Inject(shapedQueryExpression.ShaperExpression);
+        var innerEnumerable = Visit(inMemoryQueryExpression);
 
-            shaper = InjectEntityMaterializers(shaper);
+        shaper = new FileContextProjectionBindingRemovingExpressionVisitor().Visit(shaper);
 
-            var innerEnumerable = Visit(inMemoryQueryExpression);
+        shaper = new CustomShaperCompilingExpressionVisitor(IsTracking).Visit(shaper);
 
-            shaper = new FileContextProjectionBindingRemovingExpressionVisitor().Visit(shaper);
+        var shaperLambda = (LambdaExpression)shaper;
 
-            shaper = new CustomShaperCompilingExpressionVisitor(IsTracking).Visit(shaper);
+        return Expression.New(
+            typeof(QueryingEnumerable<>).MakeGenericType(shaperLambda.ReturnType).GetConstructors()[0],
+            QueryCompilationContext.QueryContextParameter,
+            innerEnumerable,
+            Expression.Constant(shaperLambda.Compile()),
+            Expression.Constant(_contextType),
+            Expression.Constant(_logger));
+    }
 
-            var shaperLambda = (LambdaExpression)shaper;
+    private static readonly MethodInfo _tableMethodInfo
+        = typeof(FileContextShapedQueryCompilingExpressionVisitor).GetTypeInfo()
+            .GetDeclaredMethod(nameof(Table));
 
-            return Expression.New(
-                typeof(QueryingEnumerable<>).MakeGenericType(shaperLambda.ReturnType).GetConstructors()[0],
-                QueryCompilationContext.QueryContextParameter,
-                innerEnumerable,
-                Expression.Constant(shaperLambda.Compile()),
-                Expression.Constant(_contextType),
-                Expression.Constant(_logger));
-        }
-
-        private static readonly MethodInfo _tableMethodInfo
-            = typeof(FileContextShapedQueryCompilingExpressionVisitor).GetTypeInfo()
-                .GetDeclaredMethod(nameof(Table));
-
-        private static IEnumerable<ValueBuffer> Table(
-            QueryContext queryContext,
-            IEntityType entityType)
-        {
-            return ((FileContextQueryContext)queryContext).Store
-                .GetTables(entityType)
-                .SelectMany(t => t.Rows.Select(vs => new ValueBuffer(vs)));
-        }
+    private static IEnumerable<ValueBuffer> Table(
+        QueryContext queryContext,
+        IEntityType entityType)
+    {
+        return ((FileContextQueryContext)queryContext).Store
+            .GetTables(entityType)
+            .SelectMany(t => t.Rows.Select(vs => new ValueBuffer(vs)));
     }
 }

@@ -7,22 +7,21 @@ using System.Linq.Expressions;
 
 using Microsoft.EntityFrameworkCore.Query;
 
-namespace FileContextCore.Query.Internal
-{
-    public class FileContextGroupByShaperExpression : GroupByShaperExpression
-    {
-        public FileContextGroupByShaperExpression(
-            Expression keySelector,
-            Expression elementSelector,
-            ParameterExpression groupingParameter,
-            ParameterExpression valueBufferParameter)
-            : base(keySelector, elementSelector)
-        {
-            GroupingParameter = groupingParameter;
-            ValueBufferParameter = valueBufferParameter;
-        }
+namespace FileContextCore.Query.Internal;
 
-        public virtual ParameterExpression GroupingParameter { get; }
-        public virtual ParameterExpression ValueBufferParameter { get; }
+public class FileContextGroupByShaperExpression : GroupByShaperExpression
+{
+    public FileContextGroupByShaperExpression(
+        Expression keySelector,
+        Expression elementSelector,
+        ParameterExpression groupingParameter,
+        ParameterExpression valueBufferParameter)
+        : base(keySelector, elementSelector)
+    {
+        GroupingParameter = groupingParameter;
+        ValueBufferParameter = valueBufferParameter;
     }
+
+    public virtual ParameterExpression GroupingParameter { get; }
+    public virtual ParameterExpression ValueBufferParameter { get; }
 }

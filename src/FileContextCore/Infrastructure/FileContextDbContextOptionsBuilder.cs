@@ -11,62 +11,61 @@ using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace FileContextCore.Infrastructure
+namespace FileContextCore.Infrastructure;
+
+/// <summary>
+///     <para>
+///         Allows in-memory specific configuration to be performed on <see cref="DbContextOptions" />.
+///     </para>
+///     <para>
+///         Instances of this class are returned from a call to
+///         <see
+///             cref="FileContextDbContextOptionsExtensions.UseFileContextDatabase(DbContextOptionsBuilder, string, System.Action{FileContextDbContextOptionsBuilder})" />
+///         and it is not designed to be directly constructed in your application code.
+///     </para>
+/// </summary>
+public class FileContextDbContextOptionsBuilder
 {
     /// <summary>
-    ///     <para>
-    ///         Allows in-memory specific configuration to be performed on <see cref="DbContextOptions" />.
-    ///     </para>
-    ///     <para>
-    ///         Instances of this class are returned from a call to
-    ///         <see
-    ///             cref="FileContextDbContextOptionsExtensions.UseFileContextDatabase(DbContextOptionsBuilder, string, System.Action{FileContextDbContextOptionsBuilder})" />
-    ///         and it is not designed to be directly constructed in your application code.
-    ///     </para>
+    ///     Initializes a new instance of the <see cref="FileContextDbContextOptionsBuilder" /> class.
     /// </summary>
-    public class FileContextDbContextOptionsBuilder
+    /// <param name="optionsBuilder"> The options builder. </param>
+    public FileContextDbContextOptionsBuilder([NotNull] DbContextOptionsBuilder optionsBuilder)
     {
-        /// <summary>
-        ///     Initializes a new instance of the <see cref="FileContextDbContextOptionsBuilder" /> class.
-        /// </summary>
-        /// <param name="optionsBuilder"> The options builder. </param>
-        public FileContextDbContextOptionsBuilder([NotNull] DbContextOptionsBuilder optionsBuilder)
-        {
-            Check.NotNull(optionsBuilder, nameof(optionsBuilder));
+        Check.NotNull(optionsBuilder, nameof(optionsBuilder));
 
-            OptionsBuilder = optionsBuilder;
-        }
-
-        /// <summary>
-        ///     Clones the configuration in this builder.
-        /// </summary>
-        /// <returns> The cloned configuration. </returns>
-        protected virtual DbContextOptionsBuilder OptionsBuilder { get; }
-
-        #region Hidden System.Object members
-
-        /// <summary>
-        ///     Returns a string that represents the current object.
-        /// </summary>
-        /// <returns> A string that represents the current object. </returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override string ToString() => base.ToString();
-
-        /// <summary>
-        ///     Determines whether the specified object is equal to the current object.
-        /// </summary>
-        /// <param name="obj"> The object to compare with the current object. </param>
-        /// <returns> true if the specified object is equal to the current object; otherwise, false. </returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override bool Equals(object obj) => base.Equals(obj);
-
-        /// <summary>
-        ///     Serves as the default hash function.
-        /// </summary>
-        /// <returns> A hash code for the current object. </returns>
-        [EditorBrowsable(EditorBrowsableState.Never)]
-        public override int GetHashCode() => base.GetHashCode();
-
-        #endregion
+        OptionsBuilder = optionsBuilder;
     }
+
+    /// <summary>
+    ///     Clones the configuration in this builder.
+    /// </summary>
+    /// <returns> The cloned configuration. </returns>
+    protected virtual DbContextOptionsBuilder OptionsBuilder { get; }
+
+    #region Hidden System.Object members
+
+    /// <summary>
+    ///     Returns a string that represents the current object.
+    /// </summary>
+    /// <returns> A string that represents the current object. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override string ToString() => base.ToString();
+
+    /// <summary>
+    ///     Determines whether the specified object is equal to the current object.
+    /// </summary>
+    /// <param name="obj"> The object to compare with the current object. </param>
+    /// <returns> true if the specified object is equal to the current object; otherwise, false. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override bool Equals(object obj) => base.Equals(obj);
+
+    /// <summary>
+    ///     Serves as the default hash function.
+    /// </summary>
+    /// <returns> A hash code for the current object. </returns>
+    [EditorBrowsable(EditorBrowsableState.Never)]
+    public override int GetHashCode() => base.GetHashCode();
+
+    #endregion
 }

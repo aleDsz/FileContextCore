@@ -12,67 +12,63 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Update;
 
 // ReSharper disable once CheckNamespace
-namespace FileContextCore.Internal
+namespace FileContextCore.Internal;
+
+public static class FileContextLoggerExtensions
 {
-
-    public static class FileContextLoggerExtensions
+    public static void TransactionIgnoredWarning(
+        [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Database.Transaction> diagnostics)
     {
+        var definition = FileContextResources.LogTransactionsNotSupported(diagnostics);
 
-        public static void TransactionIgnoredWarning(
-            [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Database.Transaction> diagnostics)
+        var warningBehavior = definition.GetLogBehavior(diagnostics);
+        if (warningBehavior != WarningBehavior.Ignore)
         {
-            var definition = FileContextResources.LogTransactionsNotSupported(diagnostics);
-
-            var warningBehavior = definition.GetLogBehavior(diagnostics);
-            if (warningBehavior != WarningBehavior.Ignore)
-            {
-                definition.Log(diagnostics, warningBehavior);
-            }
-
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
-            {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new EventData(
-                        definition,
-                        (d, _) => ((EventDefinition)d).GenerateMessage()));
-            }
+            definition.Log(diagnostics, warningBehavior);
         }
 
-
-        public static void ChangesSaved(
-            [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Update> diagnostics,
-            [NotNull] IEnumerable<IUpdateEntry> entries,
-            int rowsAffected)
+        if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
         {
-            var definition = FileContextResources.LogSavedChanges(diagnostics);
+            diagnostics.DiagnosticSource.Write(
+                definition.EventId.Name,
+                new EventData(
+                    definition,
+                    (d, _) => ((EventDefinition)d).GenerateMessage()));
+        }
+    }
 
-            var warningBehavior = definition.GetLogBehavior(diagnostics);
-            if (warningBehavior != WarningBehavior.Ignore)
-            {
-                definition.Log(
-                    diagnostics,
-                    warningBehavior,
-                    rowsAffected);
-            }
+    public static void ChangesSaved(
+        [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Update> diagnostics,
+        [NotNull] IEnumerable<IUpdateEntry> entries,
+        int rowsAffected)
+    {
+        var definition = FileContextResources.LogSavedChanges(diagnostics);
 
-            if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
-            {
-                diagnostics.DiagnosticSource.Write(
-                    definition.EventId.Name,
-                    new SaveChangesEventData(
-                        definition,
-                        ChangesSaved,
-                        entries,
-                        rowsAffected));
-            }
+        var warningBehavior = definition.GetLogBehavior(diagnostics);
+        if (warningBehavior != WarningBehavior.Ignore)
+        {
+            definition.Log(
+                diagnostics,
+                warningBehavior,
+                rowsAffected);
         }
 
-        private static string ChangesSaved(EventDefinitionBase definition, EventData payload)
+        if (diagnostics.DiagnosticSource.IsEnabled(definition.EventId.Name))
         {
-            var d = (EventDefinition<int>)definition;
-            var p = (SaveChangesEventData)payload;
-            return d.GenerateMessage(p.RowsAffected);
+            diagnostics.DiagnosticSource.Write(
+                definition.EventId.Name,
+                new SaveChangesEventData(
+                    definition,
+                    ChangesSaved,
+                    entries,
+                    rowsAffected));
         }
+    }
+
+    private static string ChangesSaved(EventDefinitionBase definition, EventData payload)
+    {
+        var d = (EventDefinition<int>)definition;
+        var p = (SaveChangesEventData)payload;
+        return d.GenerateMessage(p.RowsAffected);
     }
 }
