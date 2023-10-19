@@ -7,7 +7,6 @@ using FileContextCore.Infrastructure.Internal;
 using FileContextCore.Serializer;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 using OfficeOpenXml;

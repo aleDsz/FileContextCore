@@ -10,7 +10,6 @@ using FileContextCore.Utilities;
 using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Utilities;
 
 namespace FileContextCore.Infrastructure
 {
