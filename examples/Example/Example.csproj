@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FileContextCore\FileContextCore.csproj" />
+    <ProjectReference Include="..\..\src\FileContextCore\FileContextCore.csproj" />
   </ItemGroup>
 
 </Project>
