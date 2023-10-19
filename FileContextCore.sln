@@ -1,15 +1,28 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28803.352
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileContextCore", "src\FileContextCore\FileContextCore.csproj", "{F8A3A7CB-1F80-4021-B3BB-88919CB1B005}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "examples\Example\Example.csproj", "{B6D2852A-973B-47F7-A390-7A1A5203E5F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETDemo", "examples\ASPNETDemo\ASPNETDemo.csproj", "{8E6BFB30-5AF1-46EF-81B7-A8200616E45A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ASPNETDemo", "examples\ASPNETDemo\ASPNETDemo.csproj", "{8E6BFB30-5AF1-46EF-81B7-A8200616E45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CascadeExample", "examples\CascadeExample\CascadeExample.csproj", "{3D51BF95-B38E-4221-AAAE-5D093FD163DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CascadeExample", "examples\CascadeExample\CascadeExample.csproj", "{3D51BF95-B38E-4221-AAAE-5D093FD163DA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F6F38C83-D6AF-4269-BC87-2711A744BF91}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Source", "Source", "{595CA792-19F9-4086-BC0B-E254A042A30D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C7E50237-B05B-47A5-8911-823D0FCD3D9D}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		LICENSE = LICENSE
+		morrisjdev_logo.png = morrisjdev_logo.png
+		README.md = README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,6 +49,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F8A3A7CB-1F80-4021-B3BB-88919CB1B005} = {595CA792-19F9-4086-BC0B-E254A042A30D}
+		{B6D2852A-973B-47F7-A390-7A1A5203E5F4} = {F6F38C83-D6AF-4269-BC87-2711A744BF91}
+		{8E6BFB30-5AF1-46EF-81B7-A8200616E45A} = {F6F38C83-D6AF-4269-BC87-2711A744BF91}
+		{3D51BF95-B38E-4221-AAAE-5D093FD163DA} = {F6F38C83-D6AF-4269-BC87-2711A744BF91}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {827E36FE-ACBB-4ACD-8291-68BBF8A4E21D}
