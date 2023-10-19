@@ -24,10 +24,10 @@ namespace FileContextCore.Storage.Internal
     /// </summary>
     public interface IFileContextDatabase : IDatabase
     {
-    
+
         IFileContextStore Store { get; }
 
-    
+
         bool EnsureDatabaseCreated();
     }
 }

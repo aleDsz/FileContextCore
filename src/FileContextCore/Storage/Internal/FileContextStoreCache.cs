@@ -6,8 +6,11 @@
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
+
 using FileContextCore.Infrastructure.Internal;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace FileContextCore.Storage.Internal
@@ -20,7 +23,7 @@ namespace FileContextCore.Storage.Internal
         private readonly bool _useNameMatching;
         private readonly ConcurrentDictionary<IFileContextScopedOptions, IFileContextStore> _namedStores;
 
-    
+
         public FileContextStoreCache(
             [NotNull] ILoggingOptions loggingOptions,
             [CanBeNull] IFileContextSingletonOptions options,
@@ -44,7 +47,7 @@ namespace FileContextCore.Storage.Internal
             }
         }
 
-    
+
         public virtual IFileContextStore GetStore(IFileContextScopedOptions options)
         {
             return _namedStores.GetOrAdd(options, _ => new FileContextStore(new FileContextTableFactory(_loggingOptions, options, _serviceProvider), _useNameMatching));

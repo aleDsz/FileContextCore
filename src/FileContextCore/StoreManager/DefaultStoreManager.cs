@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+
 using FileContextCore.FileManager;
 using FileContextCore.Infrastructure.Internal;
 using FileContextCore.Serializer;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace FileContextCore.StoreManager
 {
-    class DefaultStoreManager : IStoreManager {
+    class DefaultStoreManager : IStoreManager
+    {
         private readonly IServiceProvider _serviceProvider;
         private ISerializer _serializer;
         private IFileManager _fileManager;
@@ -18,7 +21,7 @@ namespace FileContextCore.StoreManager
         {
             _serviceProvider = serviceProvider;
         }
-        
+
         public void Initialize(IFileContextScopedOptions options, IEntityType entityType,
             object keyValueFactory)
         {

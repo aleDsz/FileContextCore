@@ -10,10 +10,10 @@ namespace FileContextCore.Diagnostics.Internal
 
     public class FileContextLoggingDefinitions : LoggingDefinitions
     {
-    
+
         public EventDefinitionBase LogSavedChanges;
 
-    
+
         public EventDefinitionBase LogTransactionsNotSupported;
     }
 }

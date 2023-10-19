@@ -5,8 +5,11 @@
 
 using System;
 using System.Reflection;
+
 using FileContextCore.Infrastructure.Internal;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 

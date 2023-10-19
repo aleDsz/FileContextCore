@@ -4,6 +4,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+
 using FileContextCore.Diagnostics;
 using FileContextCore.FileManager;
 using FileContextCore.Infrastructure;
@@ -12,7 +13,9 @@ using FileContextCore.Serializer;
 using FileContextCore.Storage;
 using FileContextCore.StoreManager;
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 
@@ -54,8 +57,8 @@ namespace FileContextCore
             [CanBeNull] FileContextDatabaseRoot databaseRoot = null,
             [CanBeNull] Action<FileContextDbContextOptionsBuilder> inMemoryOptionsAction = null)
             where TContext : DbContext
-            => (DbContextOptionsBuilder<TContext>) UseFileContextDatabase(
-                (DbContextOptionsBuilder) optionsBuilder, databaseName, location, password, databaseRoot,
+            => (DbContextOptionsBuilder<TContext>)UseFileContextDatabase(
+                (DbContextOptionsBuilder)optionsBuilder, databaseName, location, password, databaseRoot,
                 inMemoryOptionsAction);
 
         /// <summary>
@@ -100,7 +103,7 @@ namespace FileContextCore
 
             ConfigureWarnings(optionsBuilder);
 
-            ((IDbContextOptionsBuilderInfrastructure) optionsBuilder).AddOrUpdateExtension(extension);
+            ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
             inMemoryOptionsAction?.Invoke(new FileContextDbContextOptionsBuilder(optionsBuilder));
 
@@ -143,7 +146,7 @@ namespace FileContextCore
             where TContext : DbContext
             where TSerializer : ISerializer
             where TFileManager : IFileManager
-            => (DbContextOptionsBuilder<TContext>) UseFileContextDatabase<TSerializer, TFileManager>(
+            => (DbContextOptionsBuilder<TContext>)UseFileContextDatabase<TSerializer, TFileManager>(
                 optionsBuilder, databaseName, location, password, databaseRoot, inMemoryOptionsAction);
 
         /// <summary>
@@ -192,7 +195,7 @@ namespace FileContextCore
 
             ConfigureWarnings(optionsBuilder);
 
-            ((IDbContextOptionsBuilderInfrastructure) optionsBuilder).AddOrUpdateExtension(extension);
+            ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
             inMemoryOptionsAction?.Invoke(new FileContextDbContextOptionsBuilder(optionsBuilder));
 
@@ -233,7 +236,7 @@ namespace FileContextCore
             [CanBeNull] Action<FileContextDbContextOptionsBuilder> inMemoryOptionsAction = null)
             where TContext : DbContext
             where TStoreManager : IStoreManager
-            => (DbContextOptionsBuilder<TContext>) UseFileContextDatabase<TStoreManager>(
+            => (DbContextOptionsBuilder<TContext>)UseFileContextDatabase<TStoreManager>(
                 optionsBuilder, databaseName, location, password, databaseRoot, inMemoryOptionsAction);
 
         /// <summary>
@@ -279,7 +282,7 @@ namespace FileContextCore
 
             ConfigureWarnings(optionsBuilder);
 
-            ((IDbContextOptionsBuilderInfrastructure) optionsBuilder).AddOrUpdateExtension(extension);
+            ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(extension);
 
             inMemoryOptionsAction?.Invoke(new FileContextDbContextOptionsBuilder(optionsBuilder));
 
@@ -288,7 +291,7 @@ namespace FileContextCore
 
 
         #endregion
-        
+
         private static void ConfigureWarnings(DbContextOptionsBuilder optionsBuilder)
         {
             // Set warnings defaults
@@ -300,7 +303,7 @@ namespace FileContextCore
                 coreOptionsExtension.WarningsConfiguration.TryWithExplicit(
                     FileContextEventId.TransactionIgnoredWarning, WarningBehavior.Throw));
 
-            ((IDbContextOptionsBuilderInfrastructure) optionsBuilder).AddOrUpdateExtension(coreOptionsExtension);
+            ((IDbContextOptionsBuilderInfrastructure)optionsBuilder).AddOrUpdateExtension(coreOptionsExtension);
         }
     }
 }

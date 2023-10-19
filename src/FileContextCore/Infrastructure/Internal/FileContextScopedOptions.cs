@@ -17,13 +17,13 @@ namespace FileContextCore.Infrastructure.Internal
         public string DatabaseName { get; }
 
         public string Location { get; }
-        
+
         public string Password { get; }
 
         public Type StoreManagerType { get; }
-        
+
         public Type SerializerType { get; }
-        
+
         public Type FileManagerType { get; }
 
         public override int GetHashCode()
@@ -38,9 +38,9 @@ namespace FileContextCore.Infrastructure.Internal
                 return false;
             }
 
-            FileContextScopedOptions optionsCompare = (FileContextScopedOptions) obj;
+            FileContextScopedOptions optionsCompare = (FileContextScopedOptions)obj;
             return optionsCompare.DatabaseName == DatabaseName && optionsCompare.Location == Location &&
-                   optionsCompare.Password == Password && optionsCompare.StoreManagerType == StoreManagerType && 
+                   optionsCompare.Password == Password && optionsCompare.StoreManagerType == StoreManagerType &&
                    optionsCompare.SerializerType == SerializerType && optionsCompare.FileManagerType == FileManagerType;
         }
     }

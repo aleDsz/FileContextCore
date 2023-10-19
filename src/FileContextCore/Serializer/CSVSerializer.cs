@@ -82,7 +82,7 @@ namespace FileContextCore.Serializer
 
             return sw.ToString();
         }
-        
+
         public string FileType => "csv";
     }
 }

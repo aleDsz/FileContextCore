@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+
+using FileContextCore.Extensions;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -64,7 +67,7 @@ namespace FileContextCore.Serializer
                 {
                     string result = "";
 
-                    object[] arr = (object[]) input;
+                    object[] arr = (object[])input;
 
                     for (int i = 0; i < arr.Length; i++)
                     {
@@ -90,9 +93,9 @@ namespace FileContextCore.Serializer
         public static TKey GetKey<TKey>(object keyValueFactoryObject, IEntityType entityType,
             Func<string, string> valueSelector)
         {
-            IPrincipalKeyValueFactory<TKey> keyValueFactory = (IPrincipalKeyValueFactory<TKey>) keyValueFactoryObject;
-            
-            return (TKey) keyValueFactory.CreateFromKeyValues(
+            IPrincipalKeyValueFactory<TKey> keyValueFactory = (IPrincipalKeyValueFactory<TKey>)keyValueFactoryObject;
+
+            return (TKey)keyValueFactory.CreateFromKeyValues(
                 entityType.FindPrimaryKey().Properties
                     .Select(p =>
                         valueSelector(p.GetColumnName())

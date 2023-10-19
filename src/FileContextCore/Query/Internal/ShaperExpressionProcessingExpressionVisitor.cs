@@ -6,7 +6,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace FileContextCore.Query.Internal
@@ -47,101 +49,101 @@ namespace FileContextCore.Query.Internal
             switch (extensionExpression)
             {
                 case EntityShaperExpression entityShaperExpression:
-                {
-                    var key = GenerateKey((ProjectionBindingExpression)entityShaperExpression.ValueBufferExpression);
-                    if (!_mapping.TryGetValue(key, out var variable))
                     {
-                        variable = Expression.Parameter(entityShaperExpression.EntityType.ClrType);
-                        _variables.Add(variable);
-                        _expressions.Add(Expression.Assign(variable, entityShaperExpression));
-                        _mapping[key] = variable;
-                    }
+                        var key = GenerateKey((ProjectionBindingExpression)entityShaperExpression.ValueBufferExpression);
+                        if (!_mapping.TryGetValue(key, out var variable))
+                        {
+                            variable = Expression.Parameter(entityShaperExpression.EntityType.ClrType);
+                            _variables.Add(variable);
+                            _expressions.Add(Expression.Assign(variable, entityShaperExpression));
+                            _mapping[key] = variable;
+                        }
 
-                    return variable;
-                }
+                        return variable;
+                    }
 
                 case ProjectionBindingExpression projectionBindingExpression:
-                {
-                    var key = GenerateKey(projectionBindingExpression);
-                    if (!_mapping.TryGetValue(key, out var variable))
                     {
-                        variable = Expression.Parameter(projectionBindingExpression.Type);
-                        _variables.Add(variable);
-                        _expressions.Add(Expression.Assign(variable, projectionBindingExpression));
-                        _mapping[key] = variable;
-                    }
+                        var key = GenerateKey(projectionBindingExpression);
+                        if (!_mapping.TryGetValue(key, out var variable))
+                        {
+                            variable = Expression.Parameter(projectionBindingExpression.Type);
+                            _variables.Add(variable);
+                            _expressions.Add(Expression.Assign(variable, projectionBindingExpression));
+                            _mapping[key] = variable;
+                        }
 
-                    return variable;
-                }
+                        return variable;
+                    }
 
                 case IncludeExpression includeExpression:
-                {
-                    var entity = Visit(includeExpression.EntityExpression);
-                    if (includeExpression.NavigationExpression is CollectionShaperExpression collectionShaper)
                     {
-                        var innerLambda = (LambdaExpression)collectionShaper.InnerShaper;
-                        var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
-                            .Inject(innerLambda.Body);
+                        var entity = Visit(includeExpression.EntityExpression);
+                        if (includeExpression.NavigationExpression is CollectionShaperExpression collectionShaper)
+                        {
+                            var innerLambda = (LambdaExpression)collectionShaper.InnerShaper;
+                            var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
+                                .Inject(innerLambda.Body);
 
-                        _expressions.Add(
-                            includeExpression.Update(
-                                entity,
-                                collectionShaper.Update(
-                                    Visit(collectionShaper.Projection),
-                                    innerShaper)));
-                    }
-                    else
-                    {
-                        _expressions.Add(
-                            includeExpression.Update(
-                                entity,
-                                Visit(includeExpression.NavigationExpression)));
-                    }
+                            _expressions.Add(
+                                includeExpression.Update(
+                                    entity,
+                                    collectionShaper.Update(
+                                        Visit(collectionShaper.Projection),
+                                        innerShaper)));
+                        }
+                        else
+                        {
+                            _expressions.Add(
+                                includeExpression.Update(
+                                    entity,
+                                    Visit(includeExpression.NavigationExpression)));
+                        }
 
-                    return entity;
-                }
+                        return entity;
+                    }
 
                 case CollectionShaperExpression collectionShaperExpression:
-                {
-                    var key = GenerateKey((ProjectionBindingExpression)collectionShaperExpression.Projection);
-                    if (!_mapping.TryGetValue(key, out var variable))
                     {
-                        var projection = Visit(collectionShaperExpression.Projection);
+                        var key = GenerateKey((ProjectionBindingExpression)collectionShaperExpression.Projection);
+                        if (!_mapping.TryGetValue(key, out var variable))
+                        {
+                            var projection = Visit(collectionShaperExpression.Projection);
 
-                        variable = Expression.Parameter(collectionShaperExpression.Type);
-                        _variables.Add(variable);
+                            variable = Expression.Parameter(collectionShaperExpression.Type);
+                            _variables.Add(variable);
 
-                        var innerLambda = (LambdaExpression)collectionShaperExpression.InnerShaper;
-                        var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
-                            .Inject(innerLambda.Body);
+                            var innerLambda = (LambdaExpression)collectionShaperExpression.InnerShaper;
+                            var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
+                                .Inject(innerLambda.Body);
 
-                        _expressions.Add(Expression.Assign(variable, collectionShaperExpression.Update(projection, innerShaper)));
-                        _mapping[key] = variable;
+                            _expressions.Add(Expression.Assign(variable, collectionShaperExpression.Update(projection, innerShaper)));
+                            _mapping[key] = variable;
+                        }
+
+                        return variable;
                     }
-
-                    return variable;
-                }
 
                 case SingleResultShaperExpression singleResultShaperExpression:
-                {
-                    var key = GenerateKey((ProjectionBindingExpression)singleResultShaperExpression.Projection);
-                    if (!_mapping.TryGetValue(key, out var variable))
                     {
-                        var projection = Visit(singleResultShaperExpression.Projection);
+                        var key = GenerateKey((ProjectionBindingExpression)singleResultShaperExpression.Projection);
+                        if (!_mapping.TryGetValue(key, out var variable))
+                        {
+                            var projection = Visit(singleResultShaperExpression.Projection);
 
-                        variable = Expression.Parameter(singleResultShaperExpression.Type);
-                        _variables.Add(variable);
+                            variable = Expression.Parameter(singleResultShaperExpression.Type);
+                            _variables.Add(variable);
 
-                        var innerLambda = (LambdaExpression)singleResultShaperExpression.InnerShaper;
-                        var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
-                            .Inject(innerLambda.Body);
+                            var innerLambda = (LambdaExpression)singleResultShaperExpression.InnerShaper;
+                            var innerShaper = new ShaperExpressionProcessingExpressionVisitor(null, innerLambda.Parameters[0])
+                                .Inject(innerLambda.Body);
 
-                        _expressions.Add(Expression.Assign(variable, singleResultShaperExpression.Update(projection, innerShaper)));
-                        _mapping[key] = variable;
+                            _expressions.Add(Expression.Assign(variable, singleResultShaperExpression.Update(projection, innerShaper)));
+                            _mapping[key] = variable;
+                        }
+
+                        return variable;
                     }
-
-                    return variable;
-                }
             }
 
             return base.VisitExtension(extensionExpression);

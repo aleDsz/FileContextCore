@@ -6,8 +6,11 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -38,7 +41,7 @@ namespace FileContextCore.Storage.Internal
         private readonly IUpdateAdapterFactory _updateAdapterFactory;
         private readonly IDiagnosticsLogger<DbLoggerCategory.Update> _updateLogger;
 
-    
+
         public FileContextDatabase(
             [NotNull] DatabaseDependencies dependencies,
             [NotNull] IFileContextStoreCache storeCache,
@@ -57,20 +60,20 @@ namespace FileContextCore.Storage.Internal
             _updateLogger = updateLogger;
         }
 
-    
+
         public virtual IFileContextStore Store => _store;
 
-    
+
         public override int SaveChanges(IList<IUpdateEntry> entries)
             => _store.ExecuteTransaction(Check.NotNull(entries, nameof(entries)), _updateLogger);
 
-    
+
         public override Task<int> SaveChangesAsync(
             IList<IUpdateEntry> entries,
             CancellationToken cancellationToken = default)
             => Task.FromResult(_store.ExecuteTransaction(Check.NotNull(entries, nameof(entries)), _updateLogger));
 
-    
+
         public virtual bool EnsureDatabaseCreated()
             => _store.EnsureCreated(_updateAdapterFactory, _updateLogger);
     }

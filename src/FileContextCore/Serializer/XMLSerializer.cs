@@ -29,7 +29,7 @@ namespace FileContextCore.Serializer
             _propertyKeys = _entityType.GetProperties().Select(p => p.GetColumnName()).ToArray();
             _typeList = _entityType.GetProperties().Select(p => p.GetValueConverter()?.ProviderClrType ?? p.ClrType).ToArray();
         }
-        
+
         public Dictionary<TKey, object[]> Deserialize<TKey>(string list, Dictionary<TKey, object[]> newList)
         {
             if (list != "")
@@ -64,7 +64,8 @@ namespace FileContextCore.Serializer
         public string Serialize<TKey>(Dictionary<TKey, object[]> list)
         {
             StringWriter sw = new StringWriter();
-            XmlWriter writer = XmlWriter.Create(sw, new XmlWriterSettings() {
+            XmlWriter writer = XmlWriter.Create(sw, new XmlWriterSettings()
+            {
                 Indent = true,
                 OmitXmlDeclaration = true
             });

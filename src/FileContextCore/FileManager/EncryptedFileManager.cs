@@ -15,7 +15,7 @@ namespace FileContextCore.FileManager
         IEntityType _type;
         private string _filetype;
         private string _key;
-		private string _databasename;
+        private string _databasename;
         private string _location;
 
         public void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType)
@@ -26,7 +26,7 @@ namespace FileContextCore.FileManager
             _databasename = options.DatabaseName ?? "";
             _location = options.Location;
         }
-        
+
         public string GetFileName()
         {
             string name = _type.GetTableName().GetValidFileName();

@@ -6,7 +6,11 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
+
+using FileContextCore.Extensions;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
@@ -28,13 +32,13 @@ namespace FileContextCore.Storage.Internal
     /// </summary>
     public class FileContextTypeMappingSource : TypeMappingSource
     {
-    
+
         public FileContextTypeMappingSource([NotNull] TypeMappingSourceDependencies dependencies)
             : base(dependencies)
         {
         }
 
-    
+
         protected override CoreTypeMapping FindMapping(in TypeMappingInfo mappingInfo)
         {
             var clrType = mappingInfo.ClrType;

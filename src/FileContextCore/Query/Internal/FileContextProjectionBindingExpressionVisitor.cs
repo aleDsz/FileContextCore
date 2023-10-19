@@ -7,6 +7,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+
+using FileContextCore.Extensions;
+
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -97,37 +100,37 @@ namespace FileContextCore.Query.Internal
                                 null);
 
                         case MethodCallExpression methodCallExpression:
-                        {
-                            if (methodCallExpression.Method.IsGenericMethod
-                                && methodCallExpression.Method.DeclaringType == typeof(Enumerable)
-                                && methodCallExpression.Method.Name == nameof(Enumerable.ToList))
                             {
-                                return AddCollectionProjection(
-                                    _queryableMethodTranslatingExpressionVisitor.TranslateSubquery(
-                                        methodCallExpression.Arguments[0]),
-                                    null,
-                                    methodCallExpression.Method.GetGenericArguments()[0]);
-                            }
-
-                            var subquery = _queryableMethodTranslatingExpressionVisitor.TranslateSubquery(methodCallExpression);
-                            if (subquery != null)
-                            {
-                                if (subquery.ResultCardinality == ResultCardinality.Enumerable)
+                                if (methodCallExpression.Method.IsGenericMethod
+                                    && methodCallExpression.Method.DeclaringType == typeof(Enumerable)
+                                    && methodCallExpression.Method.Name == nameof(Enumerable.ToList))
                                 {
-                                    return AddCollectionProjection(subquery, null, subquery.ShaperExpression.Type);
+                                    return AddCollectionProjection(
+                                        _queryableMethodTranslatingExpressionVisitor.TranslateSubquery(
+                                            methodCallExpression.Arguments[0]),
+                                        null,
+                                        methodCallExpression.Method.GetGenericArguments()[0]);
                                 }
 
-                                return new SingleResultShaperExpression(
-                                    new ProjectionBindingExpression(
-                                        _queryExpression,
-                                        _queryExpression.AddSubqueryProjection(subquery, out var innerShaper),
-                                        typeof(ValueBuffer)),
-                                    innerShaper,
-                                    subquery.ShaperExpression.Type);
-                            }
+                                var subquery = _queryableMethodTranslatingExpressionVisitor.TranslateSubquery(methodCallExpression);
+                                if (subquery != null)
+                                {
+                                    if (subquery.ResultCardinality == ResultCardinality.Enumerable)
+                                    {
+                                        return AddCollectionProjection(subquery, null, subquery.ShaperExpression.Type);
+                                    }
 
-                            break;
-                        }
+                                    return new SingleResultShaperExpression(
+                                        new ProjectionBindingExpression(
+                                            _queryExpression,
+                                            _queryExpression.AddSubqueryProjection(subquery, out var innerShaper),
+                                            typeof(ValueBuffer)),
+                                        innerShaper,
+                                        subquery.ShaperExpression.Type);
+                                }
+
+                                break;
+                            }
                     }
 
                     var translation = _expressionTranslatingExpressionVisitor.Translate(expression);

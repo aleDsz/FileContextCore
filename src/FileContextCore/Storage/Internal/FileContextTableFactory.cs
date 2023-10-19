@@ -6,9 +6,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Reflection;
+
 using FileContextCore.Infrastructure.Internal;
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -28,7 +31,7 @@ namespace FileContextCore.Storage.Internal
         private readonly ConcurrentDictionary<IKey, Func<IFileContextTable>> _factories
             = new ConcurrentDictionary<IKey, Func<IFileContextTable>>();
 
-    
+
         public FileContextTableFactory([NotNull] ILoggingOptions loggingOptions, [NotNull] IFileContextScopedOptions options, IServiceProvider serviceProvider)
         {
             _options = options;
@@ -38,7 +41,7 @@ namespace FileContextCore.Storage.Internal
             _sensitiveLoggingEnabled = loggingOptions.IsSensitiveDataLoggingEnabled;
         }
 
-    
+
         public virtual IFileContextTable Create(IEntityType entityType)
             => _factories.GetOrAdd(entityType.FindPrimaryKey(), Create)();
 

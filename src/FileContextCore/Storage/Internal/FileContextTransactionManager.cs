@@ -6,9 +6,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Transactions;
+
 using FileContextCore.Internal;
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -37,7 +40,7 @@ namespace FileContextCore.Storage.Internal
 
         private readonly IDiagnosticsLogger<DbLoggerCategory.Database.Transaction> _logger;
 
-    
+
         public FileContextTransactionManager(
             [NotNull] IDiagnosticsLogger<DbLoggerCategory.Database.Transaction> logger)
         {
@@ -46,7 +49,7 @@ namespace FileContextCore.Storage.Internal
             _logger = logger;
         }
 
-    
+
         public virtual IDbContextTransaction BeginTransaction()
         {
             _logger.TransactionIgnoredWarning();
@@ -54,7 +57,7 @@ namespace FileContextCore.Storage.Internal
             return _stubTransaction;
         }
 
-    
+
         public virtual Task<IDbContextTransaction> BeginTransactionAsync(
             CancellationToken cancellationToken = default)
         {
@@ -63,30 +66,30 @@ namespace FileContextCore.Storage.Internal
             return Task.FromResult<IDbContextTransaction>(_stubTransaction);
         }
 
-    
+
         public virtual void CommitTransaction() => _logger.TransactionIgnoredWarning();
 
-    
+
         public virtual void RollbackTransaction() => _logger.TransactionIgnoredWarning();
 
-    
+
         public virtual IDbContextTransaction CurrentTransaction => null;
 
-    
+
         public virtual Transaction EnlistedTransaction => null;
 
-    
+
         public virtual void EnlistTransaction(Transaction transaction)
         {
             _logger.TransactionIgnoredWarning();
         }
 
-    
+
         public virtual void ResetState()
         {
         }
 
-    
+
         /// <param name="cancellationToken"> A <see cref="CancellationToken" /> to observe while waiting for the task to complete. </param>
         public virtual Task ResetStateAsync(CancellationToken cancellationToken = default)
         {

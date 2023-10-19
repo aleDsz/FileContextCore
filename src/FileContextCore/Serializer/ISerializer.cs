@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
+
 using FileContextCore.Infrastructure.Internal;
+
 using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace FileContextCore.Serializer

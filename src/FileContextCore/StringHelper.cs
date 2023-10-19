@@ -15,7 +15,7 @@ namespace FileContextCore
                 {
                     continue;
                 }
-                
+
                 input = input.Replace(c, '_');
             }
 

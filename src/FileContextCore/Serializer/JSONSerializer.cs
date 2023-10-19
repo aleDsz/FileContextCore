@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using FileContextCore.Infrastructure.Internal;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
 using Newtonsoft.Json.Linq;
 
 namespace FileContextCore.Serializer
@@ -25,13 +28,13 @@ namespace FileContextCore.Serializer
 
         public Dictionary<TKey, object[]> Deserialize<TKey>(string list, Dictionary<TKey, object[]> newList)
         {
-            if(list != String.Empty)
+            if (list != String.Empty)
             {
                 JArray array = JArray.Parse(list);
 
                 foreach (var jToken in array)
                 {
-                    var json = (JObject) jToken;
+                    var json = (JObject)jToken;
                     List<object> value = new List<object>();
 
                     for (int i = 0; i < _propertyKeys.Length; i++)
@@ -54,7 +57,7 @@ namespace FileContextCore.Serializer
         {
             JArray array = new JArray();
 
-            foreach(KeyValuePair<TKey, object[]> val in list)
+            foreach (KeyValuePair<TKey, object[]> val in list)
             {
                 JObject json = new JObject();
 

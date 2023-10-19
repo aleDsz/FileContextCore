@@ -5,6 +5,7 @@
 
 using System;
 using System.Linq.Expressions;
+
 using Microsoft.EntityFrameworkCore.Query;
 
 namespace FileContextCore.Query.Internal

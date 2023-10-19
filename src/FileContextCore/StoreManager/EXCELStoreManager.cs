@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using FileContextCore.Infrastructure.Internal;
 using FileContextCore.Serializer;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.EntityFrameworkCore.Metadata;
+
 using OfficeOpenXml;
 
 namespace FileContextCore.StoreManager
@@ -65,7 +68,7 @@ namespace FileContextCore.StoreManager
             {
                 _package = _packages[options.DatabaseName];
             }
-            
+
             string name = entityType.GetTableName();
             _worksheet = _package.Workbook.Worksheets[name];
 

@@ -9,6 +9,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+
+using FileContextCore.Extensions;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -542,13 +545,13 @@ namespace FileContextCore.Query.Internal
 #pragma warning disable 618
                 case NullConditionalExpression nullConditionalExpression:
 #pragma warning restore 618
-                {
-                    var translation = Visit(nullConditionalExpression.AccessOperation);
+                    {
+                        var translation = Visit(nullConditionalExpression.AccessOperation);
 
-                    return translation.Type == nullConditionalExpression.Type
-                        ? translation
-                        : Expression.Convert(translation, nullConditionalExpression.Type);
-                }
+                        return translation.Type == nullConditionalExpression.Type
+                            ? translation
+                            : Expression.Convert(translation, nullConditionalExpression.Type);
+                    }
 
                 default:
                     return null;

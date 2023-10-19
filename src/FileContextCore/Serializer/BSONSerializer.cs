@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using FileContextCore.Infrastructure.Internal;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Bson;
 using Newtonsoft.Json.Linq;
@@ -25,14 +28,14 @@ namespace FileContextCore.Serializer
             _propertyKeys = _entityType.GetProperties().Select(p => p.GetColumnName()).ToArray();
             _typeList = _entityType.GetProperties().Select(p => p.GetValueConverter()?.ProviderClrType ?? p.ClrType).ToArray();
         }
-        
+
         public Dictionary<TKey, object[]> Deserialize<TKey>(string list, Dictionary<TKey, object[]> newList)
         {
             byte[] data = Convert.FromBase64String(list);
 
             MemoryStream ms = new MemoryStream(data);
 
-            using(BsonDataReader reader = new BsonDataReader(ms))
+            using (BsonDataReader reader = new BsonDataReader(ms))
             {
                 JsonSerializer serializer = new JsonSerializer();
                 JObject array = serializer.Deserialize<JObject>(reader);

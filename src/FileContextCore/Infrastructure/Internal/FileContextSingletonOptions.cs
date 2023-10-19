@@ -4,7 +4,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+
 using FileContextCore.Storage;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -29,7 +31,7 @@ namespace FileContextCore.Infrastructure.Internal
     /// </summary>
     public class FileContextSingletonOptions : IFileContextSingletonOptions
     {
-    
+
         public virtual void Initialize(IDbContextOptions options)
         {
             var inMemoryOptions = options.FindExtension<FileContextOptionsExtension>();
@@ -40,7 +42,7 @@ namespace FileContextCore.Infrastructure.Internal
             }
         }
 
-    
+
         public virtual void Validate(IDbContextOptions options)
         {
             var inMemoryOptions = options.FindExtension<FileContextOptionsExtension>();
@@ -55,7 +57,7 @@ namespace FileContextCore.Infrastructure.Internal
             }
         }
 
-    
+
         public virtual FileContextDatabaseRoot DatabaseRoot { get; private set; }
     }
 }

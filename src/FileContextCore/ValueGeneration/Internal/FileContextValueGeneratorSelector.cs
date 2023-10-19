@@ -4,9 +4,13 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+
+using FileContextCore.Extensions;
 using FileContextCore.Storage.Internal;
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -34,7 +38,7 @@ namespace FileContextCore.ValueGeneration.Internal
     {
         private readonly IFileContextStore _inMemoryStore;
 
-    
+
         public FileContextValueGeneratorSelector(
             [NotNull] ValueGeneratorSelectorDependencies dependencies,
             [NotNull] IFileContextDatabase inMemoryDatabase)
@@ -43,7 +47,7 @@ namespace FileContextCore.ValueGeneration.Internal
             _inMemoryStore = inMemoryDatabase.Store;
         }
 
-    
+
         public override ValueGenerator Select(IProperty property, IEntityType entityType)
         {
             Check.NotNull(property, nameof(property));
@@ -56,7 +60,7 @@ namespace FileContextCore.ValueGeneration.Internal
                 : base.Select(property, entityType);
         }
 
-    
+
         private ValueGenerator GetOrCreate(IProperty property)
         {
             Check.NotNull(property, nameof(property));

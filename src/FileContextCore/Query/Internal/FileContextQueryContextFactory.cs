@@ -4,7 +4,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using FileContextCore.Storage.Internal;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Query;
@@ -31,7 +33,7 @@ namespace FileContextCore.Query.Internal
         private readonly IFileContextStore _store;
         private readonly QueryContextDependencies _dependencies;
 
-    
+
         public FileContextQueryContextFactory(
             [NotNull] QueryContextDependencies dependencies,
             [NotNull] IFileContextStoreCache storeCache,
@@ -41,7 +43,7 @@ namespace FileContextCore.Query.Internal
             _dependencies = dependencies;
         }
 
-    
+
         public virtual QueryContext Create()
             => new FileContextQueryContext(_dependencies, _store);
     }

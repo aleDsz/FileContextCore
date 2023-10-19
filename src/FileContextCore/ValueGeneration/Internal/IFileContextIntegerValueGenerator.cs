@@ -8,7 +8,7 @@ namespace FileContextCore.ValueGeneration.Internal
 
     public interface IFileContextIntegerValueGenerator
     {
-    
+
         void Bump(object[] row);
     }
 }

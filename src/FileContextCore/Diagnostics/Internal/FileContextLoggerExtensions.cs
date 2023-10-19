@@ -4,7 +4,9 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System.Collections.Generic;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Update;
@@ -15,7 +17,7 @@ namespace FileContextCore.Internal
 
     public static class FileContextLoggerExtensions
     {
-    
+
         public static void TransactionIgnoredWarning(
             [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Database.Transaction> diagnostics)
         {
@@ -37,7 +39,7 @@ namespace FileContextCore.Internal
             }
         }
 
-    
+
         public static void ChangesSaved(
             [NotNull] this IDiagnosticsLogger<DbLoggerCategory.Update> diagnostics,
             [NotNull] IEnumerable<IUpdateEntry> entries,

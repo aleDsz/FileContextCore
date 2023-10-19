@@ -8,6 +8,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+
 using FileContextCore.FileManager;
 using FileContextCore.Infrastructure.Internal;
 using FileContextCore.Internal;
@@ -15,7 +16,9 @@ using FileContextCore.Serializer;
 using FileContextCore.StoreManager;
 using FileContextCore.Utilities;
 using FileContextCore.ValueGeneration.Internal;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -57,7 +60,7 @@ namespace FileContextCore.Storage.Internal
             _rows = Init();
         }
 
-    
+
         public virtual FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>(IProperty property)
         {
             if (_integerGenerators == null)
@@ -81,7 +84,7 @@ namespace FileContextCore.Storage.Internal
             return (FileContextIntegerValueGenerator<TProperty>)generator;
         }
 
-    
+
         public virtual IReadOnlyList<object[]> SnapshotRows()
             => _rows.Values.ToList();
 
@@ -91,7 +94,7 @@ namespace FileContextCore.Storage.Internal
         private static ValueComparer GetStructuralComparer(IProperty p)
             => p.GetStructuralValueComparer() ?? p.FindTypeMapping()?.StructuralComparer;
 
-    
+
         public virtual void Create(IUpdateEntry entry)
         {
             var row = entry.EntityType.GetProperties()
@@ -103,7 +106,7 @@ namespace FileContextCore.Storage.Internal
             BumpValueGenerators(row);
         }
 
-    
+
         public virtual void Delete(IUpdateEntry entry)
         {
             var key = CreateKey(entry);
@@ -150,7 +153,7 @@ namespace FileContextCore.Storage.Internal
             return false;
         }
 
-    
+
         public virtual void Update(IUpdateEntry entry)
         {
             var key = CreateKey(entry);

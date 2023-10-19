@@ -5,8 +5,11 @@
 
 using System.Threading;
 using System.Threading.Tasks;
+
 using FileContextCore.Utilities;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.EntityFrameworkCore.Utilities;
 using Microsoft.Extensions.DependencyInjection;
@@ -31,7 +34,7 @@ namespace FileContextCore.Storage.Internal
     {
         private readonly IDatabase _database;
 
-    
+
         public FileContextDatabaseCreator([NotNull] IDatabase database)
         {
             Check.NotNull(database, nameof(database));
@@ -39,29 +42,29 @@ namespace FileContextCore.Storage.Internal
             _database = database;
         }
 
-    
+
         protected virtual IFileContextDatabase Database => (IFileContextDatabase)_database;
 
-    
+
         public virtual bool EnsureDeleted()
             => Database.Store.Clear();
 
-    
+
         public virtual Task<bool> EnsureDeletedAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(EnsureDeleted());
 
-    
+
         public virtual bool EnsureCreated() => Database.EnsureDatabaseCreated();
 
-    
+
         public virtual Task<bool> EnsureCreatedAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(Database.EnsureDatabaseCreated());
 
-    
+
         public virtual bool CanConnect()
             => true;
 
-    
+
         public virtual Task<bool> CanConnectAsync(CancellationToken cancellationToken = default)
             => Task.FromResult(true);
     }

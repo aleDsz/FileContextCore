@@ -6,9 +6,12 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+
 using FileContextCore.Internal;
 using FileContextCore.ValueGeneration.Internal;
+
 using JetBrains.Annotations;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -26,13 +29,13 @@ namespace FileContextCore.Storage.Internal
 
         private Dictionary<object, IFileContextTable> _tables;
 
-    
+
         public FileContextStore([NotNull] IFileContextTableFactory tableFactory)
             : this(tableFactory, useNameMatching: false)
         {
         }
 
-    
+
         public FileContextStore(
             [NotNull] IFileContextTableFactory tableFactory,
             bool useNameMatching)
@@ -41,7 +44,7 @@ namespace FileContextCore.Storage.Internal
             _useNameMatching = useNameMatching;
         }
 
-    
+
         public virtual FileContextIntegerValueGenerator<TProperty> GetIntegerValueGenerator<TProperty>(
             IProperty property)
         {
@@ -54,7 +57,7 @@ namespace FileContextCore.Storage.Internal
             }
         }
 
-    
+
         public virtual bool EnsureCreated(
             IUpdateAdapterFactory updateAdapterFactory,
             IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger)
@@ -86,7 +89,7 @@ namespace FileContextCore.Storage.Internal
             }
         }
 
-    
+
         public virtual bool Clear()
         {
             lock (_lock)
@@ -105,7 +108,7 @@ namespace FileContextCore.Storage.Internal
         private static Dictionary<object, IFileContextTable> CreateTables()
             => new Dictionary<object, IFileContextTable>();
 
-    
+
         public virtual IReadOnlyList<FileContextTableSnapshot> GetTables(IEntityType entityType)
         {
             var data = new List<FileContextTableSnapshot>();
@@ -122,7 +125,7 @@ namespace FileContextCore.Storage.Internal
             return data;
         }
 
-    
+
         public virtual int ExecuteTransaction(
             IList<IUpdateEntry> entries,
             IDiagnosticsLogger<DbLoggerCategory.Update> updateLogger)

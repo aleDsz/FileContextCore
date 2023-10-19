@@ -12,11 +12,11 @@ namespace FileContextCore.FileManager
 
         IEntityType _type;
         private string _filetype;
-		private string _databasename;
+        private string _databasename;
         private string _location;
 
         public DefaultFileManager() { }
-        
+
         public void Initialize(IFileContextScopedOptions options, IEntityType entityType, string fileType)
         {
             _type = entityType;
