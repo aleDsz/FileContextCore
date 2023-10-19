@@ -5,11 +5,11 @@ VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileContextCore", "FileContextCore\FileContextCore.csproj", "{F8A3A7CB-1F80-4021-B3BB-88919CB1B005}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "Example\Example.csproj", "{B6D2852A-973B-47F7-A390-7A1A5203E5F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Example", "examples\Example\Example.csproj", "{B6D2852A-973B-47F7-A390-7A1A5203E5F4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETDemo", "ASPNETDemo\ASPNETDemo.csproj", "{8E6BFB30-5AF1-46EF-81B7-A8200616E45A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASPNETDemo", "examples\ASPNETDemo\ASPNETDemo.csproj", "{8E6BFB30-5AF1-46EF-81B7-A8200616E45A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CascadeExample", "CascadeExample\CascadeExample.csproj", "{3D51BF95-B38E-4221-AAAE-5D093FD163DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CascadeExample", "examples\CascadeExample\CascadeExample.csproj", "{3D51BF95-B38E-4221-AAAE-5D093FD163DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
