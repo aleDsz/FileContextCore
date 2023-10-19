@@ -7,8 +7,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 
-using FileContextCore.Extensions;
-
 using JetBrains.Annotations;
 
 using Microsoft.EntityFrameworkCore.ChangeTracking;

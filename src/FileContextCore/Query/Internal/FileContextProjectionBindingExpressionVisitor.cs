@@ -8,8 +8,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 
-using FileContextCore.Extensions;
-
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;

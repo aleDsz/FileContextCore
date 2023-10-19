@@ -5,7 +5,6 @@
 
 using System;
 
-using FileContextCore.Extensions;
 using FileContextCore.Storage.Internal;
 using FileContextCore.Utilities;
 
